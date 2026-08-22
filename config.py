@@ -12,4 +12,4 @@ class Config:
         f"sqlite:///{BASE_DIR / 'app' / 'database' / 'helpdesk.db'}"
     )
 
-    SQALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
