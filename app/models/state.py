@@ -14,5 +14,10 @@ class State(db.Model):
         nullable=False
     )
 
+    tickets = db.relationship(
+        "Ticket",
+        back_populates="status"
+    )
+
     def __repr__(self):
         return f"<State {self.name}>"

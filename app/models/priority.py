@@ -14,5 +14,10 @@ class Priority(db.Model):
         nullable=False
     )
 
+    tickets = db.relationship(
+        "Ticket",
+        back_populates="priority"
+    )
+
     def __repr__(self):
         return f"<Priority {self.name}>"

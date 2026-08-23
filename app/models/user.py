@@ -19,5 +19,27 @@ class User(db.Model):
         nullable=False
     )
 
+    created_tickets = db.relationship(
+        "Ticket",
+        foreign_keys="Ticket.user_id",
+        back_populates="user"
+    )
+
+    assigned_tickets = db.relationship(
+        "Ticket",
+        foreign_keys="Ticket.technician_id",
+        back_populates="technician"
+    )
+
+    comments = db.relationship(
+        "Comment",
+        back_populates="user"
+    )
+
+    history = db.relationship(
+        "History",
+        back_populates="user"
+    )
+
     def __repr__(self):
         return f"<User {self.email}>"

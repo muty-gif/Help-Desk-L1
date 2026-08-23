@@ -14,5 +14,10 @@ class Category(db.Model):
         nullable=False
     )
 
+    tickets = db.relationship(
+        "Ticket",
+        back_populates="category"
+    )
+
     def __repr__(self):
         return f"<Category {self.name}>"

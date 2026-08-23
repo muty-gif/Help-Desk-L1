@@ -34,7 +34,7 @@ class Ticket(db.Model):
 
     category = db.relationship(
         "Category",
-        backref="tickets"
+        back_populates="tickets"
     )
 
     status_id = db.Column(
@@ -45,7 +45,52 @@ class Ticket(db.Model):
 
     status = db.relationship(
         "State",
-        backref="tickets"
+        back_populates="tickets"
+    )
+
+    priority_id = db.Column(
+        db.Integer,
+        db.ForeignKey("priorities.id"),
+        nullable=False
+    )
+
+    priority = db.relationship(
+        "Priority",
+        back_populates="tickets"
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=False
+    )
+    
+    user = db.relationship(
+        "User",
+        foreign_keys=[user_id],
+        back_populates="created_tickets"
+    )
+    
+    technician_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=True
+    )
+    
+    technician = db.relationship(
+        "User",
+        foreign_keys=[technician_id],
+        back_populates="assigned_tickets"
+    )
+
+    comments = db.relationship(
+        "Comment",
+        back_populates="ticket"
+    )
+
+    history = db.relationship(
+        "History",
+        back_populates="ticket"
     )
 
     def __repr__(self):
