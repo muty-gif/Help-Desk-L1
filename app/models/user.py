@@ -1,3 +1,7 @@
+from datetime import datetime
+
+from werkzeug.security import check_password_hash, generate_password_hash
+
 from app.extensions import db
 
 
@@ -17,6 +21,17 @@ class User(db.Model):
         db.String(120),
         unique=True,
         nullable=False
+    )
+
+    password_hash = db.Column(
+        db.String(255),
+        nullable=False
+    )
+
+    role = db.Column(
+        db.String(20),
+        nullable=False,
+        default="user"
     )
 
     created_tickets = db.relationship(
@@ -40,6 +55,14 @@ class User(db.Model):
         "History",
         back_populates="user"
     )
+
+    def set_password(self, password):
+        """Genera y almacena el hash de una contraseña."""
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        """Comprueba una contraseña contra el hash almacenado."""
+        return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
         return f"<User {self.email}>"

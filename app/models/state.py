@@ -16,7 +16,7 @@ class State(db.Model):
 
     tickets = db.relationship(
         "Ticket",
-        back_populates="status"
+        back_populates="state"
     )
 
     def __repr__(self):

@@ -37,13 +37,13 @@ class Ticket(db.Model):
         back_populates="tickets"
     )
 
-    status_id = db.Column(
+    state_id = db.Column(
         db.Integer,
         db.ForeignKey("states.id"),
         nullable=False
     )
 
-    status = db.relationship(
+    state = db.relationship(
         "State",
         back_populates="tickets"
     )
@@ -85,12 +85,14 @@ class Ticket(db.Model):
 
     comments = db.relationship(
         "Comment",
-        back_populates="ticket"
+        back_populates="ticket",
+        cascade="all, delete-orphan"
     )
 
     history = db.relationship(
         "History",
-        back_populates="ticket"
+        back_populates="ticket",
+        cascade="all, delete-orphan"
     )
 
     def __repr__(self):
