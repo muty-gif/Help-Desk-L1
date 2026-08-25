@@ -1,0 +1,38 @@
+from flask_wtf import FlaskForm
+from wtforms import SelectField, StringField, SubmitField, TextAreaField
+from wtforms.validators import DataRequired, Length
+
+
+class TicketForm(FlaskForm):
+    title = StringField(
+        "Título",
+        validators=[
+            DataRequired(),
+            Length(max=150)
+        ]
+    )
+
+    description = TextAreaField(
+        "Descripción",
+        validators=[
+            DataRequired()
+        ]
+    )
+
+    category_id = SelectField(
+        "Categoría",
+        coerce=int,
+        validators=[
+            DataRequired()
+        ]
+    )
+
+    priority_id = SelectField(
+        "Prioridad",
+        coerce=int,
+        validators=[
+            DataRequired()
+        ]
+    )
+
+    submit = SubmitField("Crear ticket")

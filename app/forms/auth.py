@@ -38,3 +38,22 @@ class RegistrationForm(FlaskForm):
     )
 
     submit = SubmitField("Registrarse")
+
+class LoginForm(FlaskForm):
+    email = StringField(
+        "Correo electrónico",
+        validators=[
+            DataRequired(),
+            Email(),
+            Length(max=120)
+        ]
+    )
+
+    password = PasswordField(
+        "Contraseña",
+        validators=[
+            DataRequired()
+        ]
+    )
+
+    submit = SubmitField("Iniciar sesión")

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Tickets
+{% endblock %}
+
+{% block content %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Tickets</h1>
+
+        <a
+            href="{{ url_for('tickets.create') }}"
+            class="btn btn-primary"
+        >
+            Crear ticket
+        </a>
+    </div>
+
+    {% if tickets %}
+
+        <div class="list-group">
+
+            {% for ticket in tickets %}
+
+                <div class="list-group-item">
+
+                    <h5 class="mb-1">
+                        {{ ticket.title }}
+                    </h5>
+
+                    <p class="mb-1">
+                        {{ ticket.description }}
+                    </p>
+
+                    <small>
+                        Estado: {{ ticket.state.name }}
+                        |
+                        Prioridad: {{ ticket.priority.name }}
+                        |
+                        Categoría: {{ ticket.category.name }}
+                    </small>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="alert alert-info">
+            No hay tickets registrados.
+        </div>
+
+    {% endif %}
+
+{% endblock %}
