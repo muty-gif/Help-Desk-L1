@@ -36,3 +36,24 @@ class TicketForm(FlaskForm):
     )
 
     submit = SubmitField("Crear ticket")
+
+class TicketStateForm(FlaskForm):
+    state_id = SelectField(
+        "Estado",
+        coerce=int,
+        validators=[
+            DataRequired()
+        ]
+    )
+
+    submit = SubmitField("Cambiar estado")
+
+class CommentForm(FlaskForm):
+    content = TextAreaField(
+        "Comentario",
+        validators=[
+            DataRequired()
+        ]
+    )
+
+    submit = SubmitField("Añadir comentario")
