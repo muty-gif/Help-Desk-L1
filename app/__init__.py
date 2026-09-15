@@ -13,7 +13,11 @@ def create_app():
     """Crea y configura la aplicación Flask."""
 
     app = Flask(__name__)
-    app.config.from_object(Config)
+
+    if test_config is None:
+        app.config.from_object(Config)
+    else:
+        app.config.from_mapping(test_config)
 
     db.init_app(app)
     migrate.init_app(app, db)

@@ -1,6 +1,6 @@
 from functools import wraps
 
-from flask import flash, redirect, session, url_for
+from flask import abort, flash, redirect, session, url_for
 
 from app.extensions import db
 from app.models import User
@@ -31,3 +31,21 @@ def login_required(view):
         return view(*args, **kwargs)
 
     return wrapped_view
+
+def role_required(role):
+    def decorator(view):
+        @wraps(view)
+        def wrapped_view(*args, **kwargs):
+            user = get_current_user()
+
+            if user is None:
+                abort(401)
+
+            if user.role != role:
+                abort(403)
+
+            return view(*args, **kwargs)
+
+        return wrapped_view
+
+    return decorator

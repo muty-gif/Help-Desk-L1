@@ -57,3 +57,14 @@ class CommentForm(FlaskForm):
     )
 
     submit = SubmitField("Añadir comentario")
+
+class TechnicianForm(FlaskForm):
+    technician_id = SelectField(
+        "Técnico",
+        coerce=int,
+        validators=[
+            DataRequired()
+        ]
+    )
+
+    submit = SubmitField("Asignar técnico")
