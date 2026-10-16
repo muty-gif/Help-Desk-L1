@@ -1,2 +1,12 @@
 # Base de datos SQLite local
 *.db
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Entorno virtual
+.venv/
+
+# Tests
+.pytest_cache/

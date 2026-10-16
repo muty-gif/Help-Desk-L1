@@ -1,14 +1,16 @@
+from os import environ
 from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
 
 
 class Config:
     """Configuración base de la aplicación."""
 
-    SECRET_KEY = "dev-secret-key"
+    SECRET_KEY = environ.get("SECRET_KEY", "dev-secret-key")
 
-    BASE_DIR = Path(__file__).resolve().parent
-
-    SQLALCHEMY_DATABASE_URI = (
+    SQLALCHEMY_DATABASE_URI = environ.get(
+        "DATABASE_URL",
         f"sqlite:///{BASE_DIR / 'app' / 'database' / 'helpdesk.db'}"
     )
 
