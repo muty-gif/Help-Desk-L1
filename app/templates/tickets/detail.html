@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% from "components/badges.html" import state_badge, priority_badge %}
+
 {% block title %}
     Ticket #{{ ticket.id }}
 {% endblock %}
@@ -7,7 +9,11 @@
 {% block content %}
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Ticket #{{ ticket.id }}</h1>
+        <h1>
+            Ticket #{{ ticket.id }}
+            {{ state_badge(ticket.state.name) }}
+            {{ priority_badge(ticket.priority.name) }}
+        </h1>
 
         <a
             href="{{ url_for('tickets.index') }}"
@@ -21,9 +27,40 @@
 
         <div class="card-body">
 
-            <h2 class="card-title">
-                {{ ticket.title }}
-            </h2>
+            <div class="d-flex justify-content-between align-items-start">
+                <h2 class="card-title">
+                    {{ ticket.title }}
+                </h2>
+
+                {% if is_owner %}
+
+                    <div class="ms-3 d-flex gap-2">
+
+                        <a
+                            href="{{ url_for('tickets.edit', ticket_id=ticket.id) }}"
+                            class="btn btn-outline-primary btn-sm"
+                        >
+                            Editar
+                        </a>
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('tickets.delete', ticket_id=ticket.id) }}"
+                            class="d-inline"
+                            onsubmit="return confirm('¿Seguro que quieres eliminar este ticket?');"
+                        >
+
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                Eliminar
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
 
             <p class="card-text">
                 {{ ticket.description }}
@@ -31,60 +68,271 @@
 
             <hr>
 
-            <p>
-                <strong>Categoría:</strong>
-                {{ ticket.category.name }}
-            </p>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-1">
+                        <strong>Categoría:</strong>
+                        {{ ticket.category.name }}
+                    </p>
 
-            <p>
-                <strong>Prioridad:</strong>
-                {{ ticket.priority.name }}
-            </p>
+                    <p class="mb-1">
+                        <strong>Prioridad:</strong>
+                        {{ ticket.priority.name }}
+                    </p>
 
-            <p>
-                <strong>Estado:</strong>
-                {{ ticket.state.name }}
-            </p>
+                    <p class="mb-1">
+                        <strong>Estado:</strong>
+                        {{ ticket.state.name }}
+                    </p>
+                </div>
 
-            <p>
-                <strong>Creado por:</strong>
-                {{ ticket.user.name }}
-            </p>
+                <div class="col-md-6">
+                    <p class="mb-1">
+                        <strong>Creado por:</strong>
+                        {{ ticket.user.name }}
+                    </p>
 
-            <p>
-                <strong>Fecha de creación:</strong>
-                {{ ticket.created_at.strftime("%d/%m/%Y %H:%M") }}
-            </p>
+                    <p class="mb-1">
+                        <strong>Fecha de creación:</strong>
+                        {{ ticket.created_at.strftime("%d/%m/%Y %H:%M") }}
+                    </p>
 
-            <p>
-                <strong>Técnico asignado:</strong>
+                    <p class="mb-1">
+                        <strong>Técnico asignado:</strong>
 
-                {% if ticket.technician %}
-                    {{ ticket.technician.name }}
-                {% else %}
-                    Sin asignar
-                {% endif %}
+                        {% if ticket.technician %}
+                            {{ ticket.technician.name }}
+                        {% else %}
+                            Sin asignar
+                        {% endif %}
 
-            </p>
-            
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    {% if current_user.role == "technician" %}
+
+        <div class="card mt-4">
+
+            <div class="card-body">
+
+                <h3 class="mb-3">Gestión del ticket</h3>
+
+                <div class="row">
+
+                    <div class="col-md-4">
+
+                        <h4 class="h6 text-muted mb-2">
+                            Asignar técnico
+                        </h4>
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('tickets.assign_technician', ticket_id=ticket.id) }}"
+                            class="mb-3"
+                        >
+
+                            {{ technician_form.hidden_tag() }}
+
+                            <div class="mb-2">
+
+                                {{ technician_form.technician_id(class="form-select") }}
+
+                                {% for error in technician_form.technician_id.errors %}
+                                    <div class="text-danger">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+
+                            {{ technician_form.submit(class="btn btn-primary btn-sm") }}
+
+                        </form>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <h4 class="h6 text-muted mb-2">
+                            Cambiar estado
+                        </h4>
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('tickets.change_state', ticket_id=ticket.id) }}"
+                            class="mb-3"
+                        >
+
+                            {{ state_form.hidden_tag() }}
+
+                            <div class="mb-2">
+
+                                {{ state_form.state_id(class="form-select") }}
+
+                                {% for error in state_form.state_id.errors %}
+                                    <div class="text-danger">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+
+                            {{ state_form.submit(class="btn btn-primary btn-sm") }}
+
+                        </form>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <h4 class="h6 text-muted mb-2">
+                            Cambiar prioridad
+                        </h4>
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('tickets.change_priority', ticket_id=ticket.id) }}"
+                            class="mb-3"
+                        >
+
+                            {{ priority_form.hidden_tag() }}
+
+                            <div class="mb-2">
+
+                                {{ priority_form.priority_id(class="form-select") }}
+
+                                {% for error in priority_form.priority_id.errors %}
+                                    <div class="text-danger">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+
+                            {{ priority_form.submit(class="btn btn-primary btn-sm") }}
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+    <div class="card mt-4">
+
+        <div class="card-body">
+
+            <h3 class="card-title mb-3">
+                Historial
+            </h3>
+
+            {% if ticket.history %}
+
+                {% for history in ticket.history|sort(attribute="created_at", reverse=true) %}
+
+                    <div class="border-bottom pb-3 mb-3">
+
+                        <p class="mb-1">
+                            <strong>{{ history.action }}</strong>
+                        </p>
+
+                        <p class="mb-1">
+                            {{ history.old_value }}
+                            →
+                            {{ history.new_value }}
+                        </p>
+
+                        <small class="text-muted">
+                            {{ history.user.name }}
+                            ·
+                            {{ history.created_at.strftime("%d/%m/%Y %H:%M") }}
+                        </small>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p class="text-muted mb-0">
+                    No hay cambios registrados.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <div class="card mt-4">
+
+        <div class="card-body">
+
+            <h3 class="card-title mb-3">
+                Comentarios
+            </h3>
+
+            {% if ticket.comments %}
+
+                {% for comment in ticket.comments|sort(attribute="created_at") %}
+
+                    <div class="border-bottom pb-3 mb-3">
+
+                        <p class="mb-1">
+                            {{ comment.content }}
+                        </p>
+
+                        <small class="text-muted">
+                            {{ comment.user.name }}
+                            ·
+                            {{ comment.created_at.strftime("%d/%m/%Y %H:%M") }}
+                        </small>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p class="text-muted">
+                    No hay comentarios.
+                </p>
+
+            {% endif %}
+
             <hr>
 
-            <h3 class="mb-3">Asignar técnico</h3>
+            <h4 class="mb-3">
+                Añadir comentario
+            </h4>
 
             <form
                 method="POST"
-                action="{{ url_for('tickets.assign_technician', ticket_id=ticket.id) }}"
+                action="{{ url_for('tickets.add_comment', ticket_id=ticket.id) }}"
             >
 
-                {{ technician_form.hidden_tag() }}
+                {{ comment_form.hidden_tag() }}
 
                 <div class="mb-3">
 
-                    {{ technician_form.technician_id.label(class="form-label") }}
+                    {{ comment_form.content.label(class="form-label") }}
 
-                    {{ technician_form.technician_id(class="form-select") }}
+                    {{ comment_form.content(
+                        class="form-control",
+                        rows="4"
+                    ) }}
 
-                    {% for error in technician_form.technician_id.errors %}
+                    {% for error in comment_form.content.errors %}
                         <div class="text-danger">
                             {{ error }}
                         </div>
@@ -92,159 +340,12 @@
 
                 </div>
 
-                {{ technician_form.submit(class="btn btn-primary") }}
-
-            </form>
-
-            <hr>
-
-            <h3 class="mb-3">Cambiar estado</h3>
-
-            <form
-                method="POST"
-                action="{{ url_for('tickets.change_state', ticket_id=ticket.id) }}"
-            >
-
-                {{ state_form.hidden_tag() }}
-
-                <div class="mb-3">
-                    {{ state_form.state_id.label(class="form-label") }}
-
-                    {{ state_form.state_id(class="form-select") }}
-
-                    {% for error in state_form.state_id.errors %}
-                        <div class="text-danger">
-                            {{ error }}
-                        </div>
-                    {% endfor %}
-                </div>
-
-                {{ state_form.submit(class="btn btn-primary") }}
+                {{ comment_form.submit(class="btn btn-primary") }}
 
             </form>
 
         </div>
 
     </div>
-
-<div class="card mt-4">
-
-    <div class="card-body">
-
-        <h3 class="card-title mb-3">
-            Historial
-        </h3>
-
-        {% if ticket.history %}
-
-            {% for history in ticket.history|sort(attribute="created_at", reverse=true) %}
-
-                <div class="border-bottom pb-3 mb-3">
-
-                    <p class="mb-1">
-                        <strong>{{ history.action }}</strong>
-                    </p>
-
-                    <p class="mb-1">
-                        {{ history.old_value }}
-                        →
-                        {{ history.new_value }}
-                    </p>
-
-                    <small class="text-muted">
-                        {{ history.user.name }}
-                        ·
-                        {{ history.created_at.strftime("%d/%m/%Y %H:%M") }}
-                    </small>
-
-                </div>
-
-            {% endfor %}
-
-        {% else %}
-
-            <p class="text-muted mb-0">
-                No hay cambios registrados.
-            </p>
-
-        {% endif %}
-
-    </div>
-
-</div>
-
-<div class="card mt-4">
-
-    <div class="card-body">
-
-        <h3 class="card-title mb-3">
-            Comentarios
-        </h3>
-
-        {% if ticket.comments %}
-
-            {% for comment in ticket.comments|sort(attribute="created_at") %}
-
-                <div class="border-bottom pb-3 mb-3">
-
-                    <p class="mb-1">
-                        {{ comment.content }}
-                    </p>
-
-                    <small class="text-muted">
-                        {{ comment.user.name }}
-                        ·
-                        {{ comment.created_at.strftime("%d/%m/%Y %H:%M") }}
-                    </small>
-
-                </div>
-
-            {% endfor %}
-
-        {% else %}
-
-            <p class="text-muted">
-                No hay comentarios.
-            </p>
-
-        {% endif %}
-
-        <hr>
-
-        <h4 class="mb-3">
-            Añadir comentario
-        </h4>
-
-        <form
-            method="POST"
-            action="{{ url_for('tickets.add_comment', ticket_id=ticket.id) }}"
-        >
-
-            {{ comment_form.hidden_tag() }}
-
-            <div class="mb-3">
-
-                {{ comment_form.content.label(class="form-label") }}
-
-                {{ comment_form.content(
-                    class="form-control",
-                    rows="4"
-                ) }}
-
-                {% for error in comment_form.content.errors %}
-                    <div class="text-danger">
-                        {{ error }}
-                    </div>
-                {% endfor %}
-
-            </div>
-
-            {{ comment_form.submit(class="btn btn-primary") }}
-
-        </form>
-
-    </div>
-
-</div>
 
 {% endblock %}

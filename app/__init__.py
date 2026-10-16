@@ -1,15 +1,15 @@
 from flask import Flask
 
-from config import Config
+from app.auth import get_current_user
 from app.extensions import db, migrate
 from app.routes import main_bp
 from app.routes.auth import auth_bp
 from app.routes.tickets import tickets_bp
 from app.seed import register_seed_command
-from app.auth import get_current_user
+from config import Config
 
 
-def create_app():
+def create_app(test_config=None):
     """Crea y configura la aplicación Flask."""
 
     app = Flask(__name__)

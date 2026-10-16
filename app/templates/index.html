@@ -1,20 +1,165 @@
 {% extends "base.html" %}
 
+{% from "components/badges.html" import state_badge, priority_badge %}
+
 {% block title %}
 Inicio
 {% endblock %}
 
 {% block content %}
 
-<div class="text-center">
+    {% if current_user %}
 
-    <h1 class="display-4">
-        Bienvenido al Sistema de Tickets
-    </h1>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Hola, {{ current_user.name }}</h1>
 
-    <p class="lead">
-        Tu aplicación Flask está funcionando correctamente.
-    </p>
-</div>
+            <a
+                href="{{ url_for('tickets.create') }}"
+                class="btn btn-primary"
+            >
+                Crear ticket
+            </a>
+        </div>
+
+        <div class="row g-3 mb-4">
+
+            <div class="col-6 col-md-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="display-6">{{ total }}</div>
+                        <div class="text-muted">Tickets</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="display-6">
+                            {{ stats.get("Abierto", 0) }}
+                        </div>
+                        <div class="text-muted">Abiertos</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="display-6">
+                            {{ stats.get("En progreso", 0) }}
+                        </div>
+                        <div class="text-muted">En progreso</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="display-6">
+                            {{ stats.get("Resuelto", 0) + stats.get("Cerrado", 0) }}
+                        </div>
+                        <div class="text-muted">Resueltos</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        {% if current_user.role == "technician" %}
+
+            <div class="alert alert-info d-flex justify-content-between align-items-center">
+                <span>
+                    <strong>{{ unassigned }}</strong>
+                    ticket(s) sin técnico asignado.
+                </span>
+
+                <a href="{{ url_for('tickets.index') }}" class="btn btn-outline-info btn-sm">
+                    Ver todos
+                </a>
+            </div>
+
+        {% endif %}
+
+        <h2 class="h4 mb-3">Recientes</h2>
+
+        {% if recent %}
+
+            <div class="list-group mb-4">
+
+                {% for ticket in recent %}
+
+                    <a
+                        href="{{ url_for('tickets.detail', ticket_id=ticket.id) }}"
+                        class="list-group-item list-group-item-action"
+                    >
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-1">
+                                {{ ticket.title }}
+                            </h5>
+
+                            <span>
+                                {{ state_badge(ticket.state.name) }}
+                                {{ priority_badge(ticket.priority.name) }}
+                            </span>
+                        </div>
+
+                        <p class="mb-1 text-truncate">
+                            {{ ticket.description }}
+                        </p>
+
+                        <small class="text-muted">
+                            {{ ticket.category.name }}
+                            ·
+                            {{ ticket.created_at.strftime("%d/%m/%Y %H:%M") }}
+                        </small>
+                    </a>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="alert alert-info mb-4">
+                Todavía no has creado ningún ticket.
+            </div>
+
+        {% endif %}
+
+    {% else %}
+
+        <div class="text-center py-5">
+
+            <h1 class="display-4">
+                Help Desk
+            </h1>
+
+            <p class="lead">
+                Sistema de tickets para solicitudes de soporte:
+                crea incidencias, sigue su estado y conversa con
+                el equipo técnico.
+            </p>
+
+            <div class="d-grid gap-2 d-md-inline-flex justify-content-center">
+                <a
+                    href="{{ url_for('auth.register') }}"
+                    class="btn btn-primary btn-lg"
+                >
+                    Crear cuenta
+                </a>
+
+                <a
+                    href="{{ url_for('auth.login') }}"
+                    class="btn btn-outline-secondary btn-lg"
+                >
+                    Iniciar sesión
+                </a>
+            </div>
+
+        </div>
+
+    {% endif %}
 
 {% endblock %}

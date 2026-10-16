@@ -1,8 +1,7 @@
 import click
 
 from app.extensions import db
-
-from app.models import Category, State, Priority
+from app.models import Category, Priority, State
 
 
 def seed_data():

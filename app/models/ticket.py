@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from app.extensions import db
 
@@ -23,7 +23,7 @@ class Ticket(db.Model):
     created_at = db.Column(
         db.DateTime,
         nullable=False,
-        default=datetime.utcnow
+        default=lambda: datetime.now(UTC)
     )
 
     category_id = db.Column(

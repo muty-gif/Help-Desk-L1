@@ -5,7 +5,6 @@ from app.extensions import db
 from app.forms.auth import LoginForm, RegistrationForm
 from app.models import User
 
-
 auth_bp = Blueprint(
     "auth",
     __name__,

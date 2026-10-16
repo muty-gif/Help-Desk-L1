@@ -1,0 +1,24 @@
+{% macro state_badge(state_name) %}
+    {% set colors = {
+        "Abierto": "primary",
+        "En progreso": "warning",
+        "Pendiente": "secondary",
+        "Resuelto": "success",
+        "Cerrado": "dark"
+    } %}
+    <span class="badge text-bg-{{ colors.get(state_name, "secondary") }}">
+        {{ state_name }}
+    </span>
+{% endmacro %}
+
+{% macro priority_badge(priority_name) %}
+    {% set colors = {
+        "Baja": "secondary",
+        "Media": "info",
+        "Alta": "warning",
+        "Crítica": "danger"
+    } %}
+    <span class="badge text-bg-{{ colors.get(priority_name, "secondary") }}">
+        {{ priority_name }}
+    </span>
+{% endmacro %}

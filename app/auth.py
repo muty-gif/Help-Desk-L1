@@ -15,6 +15,25 @@ def get_current_user():
 
     return db.session.get(User, user_id)
 
+def can_manage_ticket(user, ticket):
+    """Indica si un usuario puede ver o administrar un ticket.
+
+    Regla del sistema: el creador es dueño del contenido del ticket
+    (editar y borrar) y los técnicos gestionan su flujo (estado,
+    prioridad, asignación y comentarios).
+    """
+    if user is None:
+        return False
+
+    if user.role == "technician":
+        return True
+
+    return ticket.user_id == user.id
+
+def owns_ticket(user, ticket):
+    """Indica si el usuario es el creador del ticket."""
+    return user is not None and ticket.user_id == user.id
+
 def login_required(view):
     """Exige que exista un usuario autenticado."""
 
