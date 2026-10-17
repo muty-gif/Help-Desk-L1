@@ -23,7 +23,7 @@ def register():
 
         if existing_user:
             form.email.errors.append(
-                "Ya existe una cuenta con este correco electrónico."
+                "Ya existe una cuenta con este correo electrónico."
             )
         else:
             user = User(
