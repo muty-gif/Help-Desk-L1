@@ -6,6 +6,17 @@ Los usuarios crean incidencias, el equipo técnico las gestiona (estado,
 prioridad y asignación) y cada cambio queda registrado en el historial
 del ticket.
 
+## Capturas de pantalla
+
+| | |
+| --- | --- |
+| ![Panel de inicio](docs/screenshots/dashboard.png) | ![Listado de tickets](docs/screenshots/tickets-list.png) |
+| *Panel de inicio con estadísticas* | *Listado con búsqueda y filtros* |
+| ![Detalle del ticket](docs/screenshots/ticket-detail.png) | ![Gestión del ticket](docs/screenshots/ticket-management.png) |
+| *Detalle del ticket (vista del creador)* | *Gestión del ticket (vista del técnico)* |
+| ![Comentarios](docs/screenshots/ticket-comments.png) | ![Página de inicio](docs/screenshots/landing.png) |
+| *Comentarios en el ticket* | *Página pública de inicio* |
+
 ## Características
 
 - **Autenticación** por sesión con contraseña encriptada (registro,
