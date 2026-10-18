@@ -1,5 +1,7 @@
 # Help Desk
 
+**Español** | [English](README.en.md)
+
 Sistema de tickets de soporte construido con Flask.
 
 Los usuarios crean incidencias, el equipo técnico las gestiona (estado,
@@ -30,30 +32,6 @@ del ticket.
   título y asignación de técnico.
 - **Listado con filtros**: búsqueda por texto, estado y prioridad.
 - **Panel de inicio** con estadísticas y los tickets más recientes.
-
-## Estado del proyecto
-
-Todo lo siguiente está implementado, probado y funcionando:
-
-- [x] Esquema de base de datos con migraciones de Alembic y datos
-  iniciales (`flask seed`).
-- [x] Registro, inicio y cierre de sesión con contraseñas encriptadas
-  (Werkzeug) y sesiones en servidor.
-- [x] Ciclo de vida completo de un ticket: crear, consultar, editar y
-  eliminar, con permisos comprobados en cada ruta.
-- [x] Comentarios por ticket.
-- [x] Gestión técnica: cambio de estado, cambio de prioridad,
-  asignación **y desasignación** de técnico.
-- [x] Historial automático de cambios con autor y valores anterior y
-  nuevo.
-- [x] Listado con búsqueda por texto y filtros de estado y prioridad,
-  con visibilidad distinta según el rol.
-- [x] Panel de inicio con estadísticas por estado, tickets sin asignar
-  y últimos tickets.
-- [x] Interfaz con Bootstrap 5: badges de estado/prioridad, formularios
-  condicionados al rol y mensajes flash.
-- [x] 51 pruebas automatizadas (`pytest`) y análisis estático (`ruff`)
-  en verde.
 
 ## Reglas de permisos
 
@@ -147,10 +125,11 @@ o bien:
 python run.py
 ```
 
-## Pruebas
+## Pruebas y calidad de código
 
 ```bash
 pytest
+ruff check app tests config.py run.py
 ```
 
 Hay 51 pruebas en `tests/`:
@@ -165,12 +144,6 @@ Hay 51 pruebas en `tests/`:
 
 `tests/conftest.py` centraliza los fixtures: aplicación en memoria,
 datos semilla y fábricas de usuarios y tickets.
-
-## Calidad de código
-
-```bash
-ruff check app tests config.py run.py
-```
 
 ## Configuración
 
